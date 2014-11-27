@@ -1,8 +1,8 @@
 {
-  "name": "seed",
-  "version": "0.0.5",
-  "description": "the seed for Jade, Stylus, LiveScript and React apps",
-  "main": "main.js",
+  "name": "react-eword",
+  "version": "0.0.1",
+  "description": "A React component for building Chinese stroke practice.",
+  "main": "./dist/EWord/",
   "scripts": {
     "start": "gulp",
     "prepublish": "gulp compile",

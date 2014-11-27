@@ -1,31 +1,27 @@
-# seed -- the seed for Jade, Stylus, LiveScript and React apps
+# react-eword
 
-This project is an application skeleton for anyone who loves Jade, Stylus, LiveScript and React.
+A React component for building Chinese stroke practice.
 
-## Usage
+## Develop
 
 ```bash
 npm install
 npm start
 ```
 
-## Layout
+## License
 
-```
-# all of the sources
-src/
-  app/
-    *.ls
-    *.styl
-  index.ls
-  index.jade
+<p xmlns:dct="http://purl.org/dc/terms/">
+  <a rel="license"
+     href="http://creativecommons.org/publicdomain/zero/1.0/">
+    <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style: none;" alt="CC0" />
+  </a>
+  <br />
+  To the extent possible under law,
+  <a rel="dct:publisher"
+     href="#">
+    <span property="dct:title">caasi Huang</span></a>
+  has waived all copyright and related or neighboring rights to
+  <span property="dct:title">react-eword</span>.
+</p>
 
-# all of the files which are created and watched by gulp
-# so you can host them with gh-pages
-dist/
-  **/*.css
-  **/*.js
-  index.js
-bundle.js
-index.html
-```
