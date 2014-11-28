@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "caasi Huang",
-  "license": "MIT",
+  "license": "CC0-1.0",
   "devDependencies": {
     "LiveScript": "^1.3.1",
     "css-loader": "^0.9.0",
@@ -26,6 +26,8 @@
     "webpack-dev-server": "^1.6.5"
   },
   "dependencies": {
-    "react": "^0.12.0"
+    "jquery": "^2.1.1",
+    "react": "^0.12.0",
+    "react-zh-stroker": "^0.1.1"
   }
 }
