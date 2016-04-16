@@ -1,7 +1,8 @@
 React = require 'react'
+ReactDOM = require 'react-dom'
 
-{ svg, g } = React.DOM
-{ Stroke } = require 'react-zh-stroker'
+{ svg, g, div } = React.DOM
+Stroke = require 'react-zh-stroker/lib/Stroke'
 
 Stroke = React.createFactory Stroke
 
@@ -22,7 +23,7 @@ Word = module.exports = React.createClass do
     progress: 0
   render: ->
     { word } = @props.data
-    { progress } = @props
+    { key, progress } = @props
     progress = 0 if progress < 0
     progress = word.length if progress > word.length
     svg do
@@ -42,4 +43,3 @@ Word = module.exports = React.createClass do
             color: if i isnt progress
               then @props.color
               else @props.highlight
-

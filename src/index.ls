@@ -1,8 +1,11 @@
 $     = require 'jquery'
 React = require 'react'
+ReactDOM = require 'react-dom'
+
+createClass = React.createFactory << React.createClass
 
 { ol, li } = React.DOM
-{ computeLength } = require '../node_modules/react-zh-stroker/dist/zhStroker/data'
+{ computeLength } = require 'react-zh-stroker/lib/data'
 { Word } = require './EWord'
 
 Word = React.createFactory Word
@@ -12,9 +15,9 @@ Word = React.createFactory Word
 data <- $.getJSON 'https://www.moedict.tw/json/840c.json'
 data = computeLength data
 
-App = React.createClass do
+App = createClass do
   displayName: 'App'
-  getDefaultProps: ->
+  defaultProps: ->
     data: null
   render: ->
     { word } = @props.data
@@ -25,16 +28,15 @@ App = React.createClass do
         padding: 0
       for i til word.length
         li do
+          key: i
           className: 'partial'
           Word do
-            key: i
             data: @props.data
-            width:  50
-            height: 50
+            width:  400
+            height: 400
             progress: i
-App = React.createFactory App
 
-React.render do
+ReactDOM.render do
   App { data }
   document.getElementById \container
 
