@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "bf5adaf07a3df7a5142e"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b3c8ddc6f9834974c72c"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -40779,7 +40779,7 @@
 
 	exports = module.exports = __webpack_require__(270)();
 	__webpack_require__(271)(exports, __webpack_require__(272), "");
-	exports.push([module.id, "\nhtml,\nbody,\n#container,\n.app {\n  height: 100%;\n}\n.app {\n  background-color: #e2e2e2;\n}\n.input-text {\n  background-color: #16161d;\n}\n.input-text > input {\n  outline: none;\n  box-sizing: border-box;\n  border: 12px solid #16161d;\n  width: 100%;\n  font-size: 24px;\n  line-height: 24px;\n}\n.row {\n  padding: 4px;\n}\n.col {\n  background-color: #fff;\n  box-sizing: border-box;\n  border: 1px solid #a66;\n  margin: 4px;\n}\n.whole-word {\n  box-sizing: border-box;\n  border: 1px solid #a66;\n}\n.partial {\n  position: relative;\n}\n.grid {\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px solid #a66;\n}\n.grid:before,\n.grid:after {\n  position: absolute;\n  content: '';\n  display: block;\n}\n.grid:after {\n  height: 100%;\n  width: 33.3%;\n  left: 33.3%;\n  top: 0;\n  border-left: 1px solid #a66;\n  border-right: 1px solid #a66;\n}\n.grid:before {\n  width: 100%;\n  height: 33.3%;\n  left: 0;\n  top: 33.3%;\n  border-top: 1px solid #a66;\n  border-bottom: 1px solid #a66;\n}\n.word {\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n", ""]);
+	exports.push([module.id, "\nhtml,\nbody,\n#container,\n.app {\n  height: 100%;\n}\n.input-text {\n  background-color: #16161d;\n}\n.input-text > input {\n  outline: none;\n  box-sizing: border-box;\n  border: 12px solid #16161d;\n  width: 100%;\n  font-size: 24px;\n  line-height: 24px;\n}\n.row {\n  padding: 4px;\n}\n.col {\n  background-color: #fff;\n  box-sizing: border-box;\n  border: 1px solid #a66;\n  margin: 4px;\n}\n.whole-word {\n  box-sizing: border-box;\n  border: 1px solid #a66;\n}\n.partial {\n  position: relative;\n}\n.grid {\n  position: absolute;\n  box-sizing: border-box;\n  border: 1px solid #a66;\n}\n.grid:before,\n.grid:after {\n  position: absolute;\n  content: '';\n  display: block;\n}\n.grid:after {\n  height: 100%;\n  width: 33.3%;\n  left: 33.3%;\n  top: 0;\n  border-left: 1px solid #a66;\n  border-right: 1px solid #a66;\n}\n.grid:before {\n  width: 100%;\n  height: 33.3%;\n  left: 0;\n  top: 33.3%;\n  border-top: 1px solid #a66;\n  border-bottom: 1px solid #a66;\n}\n.word {\n  position: absolute;\n  top: 0;\n  left: 0;\n}\n", ""]);
 
 /***/ },
 /* 270 */
