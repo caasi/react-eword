@@ -3,9 +3,11 @@ React = require 'react'
 ReactDOM = require 'react-dom'
 punycode = require 'punycode'
 
+require './index.css'
+
 createClass = React.createFactory << React.createClass
 
-{ div, ol, li } = React.DOM
+{ div, ol, li, span } = React.DOM
 computeLength = require 'react-zh-stroker/lib/data/computeLength'
 
 { Word } = require './EWord'
@@ -26,7 +28,15 @@ getData = (utfs = [], cb) ->
 
 ##
 # main
-Row = div
+Row = createClass do
+  displayName: 'Row'
+  render: ->
+    { children } = @props
+    div do
+      style:
+        display: 'flex'
+        flex-direction: 'column-reverse'
+      children
 Col = createClass do
   displayName: 'Col'
   getDefaultProps: ->
@@ -39,39 +49,50 @@ Col = createClass do
     { charWidth, charHeight, charCount } = @props
     div do
       style:
-        display: 'inline-block'
-        vertical-align: 'top'
-        margin-right: 5
+        display: 'flex'
+        flex-direction: 'row'
+        margin-bottom: 5
+        width: charHeight * (charCount + 2) + 1
         border: 'solid 1px black'
       div do
         className: 'word'
         style:
-          border-bottom: 'solid 1px black'
-        WholeWord do
-          data: @props.data
-          width:  charWidth
-          height: charHeight
-          progress: Infinity
+          border-right: 'solid 1px black'
+        span do
+          style:
+            display: 'block'
+            transform: 'rotate(-90deg)'
+          WholeWord do
+            data: @props.data
+            width:  charHeight
+            height: charWidth
+            progress: Infinity
       ol do
         className: 'printing'
         style:
-          display: 'inline-block'
+          display: 'flex'
+          flex-flow: 'row wrap'
+          align-items: 'flex-end'
           list-style: \none
           padding: 0
           margin: 0
-          width: charWidth
-          height: charHeight * charCount
+          width: charHeight * (charCount + 1)
         for i til word.length
           li do
             key: i
             className: 'partial'
             style:
-              display: 'inline-block'
-            Word do
-              data: @props.data
-              width:  charWidth
-              height: charHeight
-              progress: i
+              width: charHeight
+              height: charWidth
+            span do
+              style:
+                display: 'block'
+                transform: 'rotate(-90deg)'
+              Word do
+                data: @props.data
+                width:  charHeight
+                height: charWidth
+                progress: i
 
 codes = punycode.ucs2.decode '然後他就死掉了'
 codes = for code in codes => code.toString 16
