@@ -1,41 +1,131 @@
 (function(){
-  var $, React, ReactDOM, punycode, createClass, ref$, div, ol, li, span, computeLength, Word, WholeWord, moedict, getData, Row, Col, codes, res$, i$, len$, code, slice$ = [].slice;
+  var $, React, ReactDOM, punycode, createClass, ref$, div, ol, li, form, input, computeLength, Word, WholeWord, moedict, getData, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_COUNT, App, Row, Col, slice$ = [].slice;
   $ = require('jquery');
   React = require('react');
   ReactDOM = require('react-dom');
   punycode = require('punycode');
   require('./index.css');
   createClass = compose$(React.createClass, React.createFactory);
-  ref$ = React.DOM, div = ref$.div, ol = ref$.ol, li = ref$.li, span = ref$.span;
+  ref$ = React.DOM, div = ref$.div, ol = ref$.ol, li = ref$.li, form = ref$.form, input = ref$.input;
   computeLength = require('react-zh-stroker/lib/data/computeLength');
   Word = require('./EWord').Word;
   Word = React.createFactory(Word);
   WholeWord = require('react-zh-stroker/lib/Word');
   WholeWord = React.createFactory(WholeWord);
   moedict = '//www.moedict.tw/json/';
-  getData = function(utfs, cb){
-    var x, xs;
+  getData = function(id, utfs, cb){
+    var x, xs, d;
     utfs == null && (utfs = []);
     x = utfs[0], xs = slice$.call(utfs, 1);
     if (!x) {
-      return cb([]);
+      return cb(id, []);
     } else {
-      return $.getJSON(moedict + "" + x + ".json", function(r){
-        return getData(xs, function(rs){
-          return cb([r].concat(slice$.call(rs)));
+      d = $.getJSON(moedict + "" + x + ".json");
+      d.done(function(r){
+        return getData(id, xs, function(id, rs){
+          return cb(id, [r].concat(slice$.call(rs)));
+        });
+      });
+      return d.fail(function(){
+        return getData(id, xs, function(id, rs){
+          return cb(id, rs);
         });
       });
     }
   };
+  DEFAULT_WIDTH = 96;
+  DEFAULT_HEIGHT = 96;
+  DEFAULT_COUNT = 8;
+  App = createClass({
+    displayName: 'App',
+    getDefaultProps: function(){
+      return {
+        charWidth: DEFAULT_WIDTH,
+        charHeight: DEFAULT_HEIGHT,
+        charCount: DEFAULT_COUNT
+      };
+    },
+    getInitialState: function(){
+      return {
+        id: 0,
+        words: '',
+        data: []
+      };
+    },
+    componentDidUpdate: function(prevProps, prevState){
+      var words, codes, res$, i$, len$, code, this$ = this;
+      words = this.state.words;
+      if (words !== prevState.words) {
+        codes = punycode.ucs2.decode(words);
+        res$ = [];
+        for (i$ = 0, len$ = codes.length; i$ < len$; ++i$) {
+          code = codes[i$];
+          res$.push(code.toString(16));
+        }
+        codes = res$;
+        this.state.id += 1;
+        return getData(this.state.id, codes, function(id, data){
+          if (id >= this$.state.id) {
+            return this$.setState({
+              data: data
+            });
+          }
+        });
+      }
+    },
+    render: function(){
+      var ref$, charWidth, charHeight, charCount, words, data, key, d, this$ = this;
+      ref$ = this.props, charWidth = ref$.charWidth, charHeight = ref$.charHeight, charCount = ref$.charCount;
+      ref$ = this.state, words = ref$.words, data = ref$.data;
+      return form({
+        className: 'app'
+      }, div({
+        className: 'input-text'
+      }, input({
+        value: words,
+        onChange: function(e){
+          return this$.setState({
+            words: e.target.value
+          });
+        }
+      })), Row({
+        charWidth: charWidth,
+        charHeight: charHeight,
+        charCount: charCount
+      }, (function(){
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = data).length; i$ < len$; ++i$) {
+          key = i$;
+          d = ref$[i$];
+          results$.push(Col({
+            key: key,
+            charWidth: charWidth,
+            charHeight: charHeight,
+            charCount: charCount,
+            data: computeLength(d)
+          }));
+        }
+        return results$;
+      }())));
+    }
+  });
   Row = createClass({
     displayName: 'Row',
+    getDefaultProps: function(){
+      return {
+        charWidth: DEFAULT_WIDTH,
+        charHeight: DEFAULT_HEIGHT,
+        charCount: DEFAULT_COUNT
+      };
+    },
     render: function(){
-      var children;
-      children = this.props.children;
+      var ref$, children, charWidth, charHeight, charCount;
+      ref$ = this.props, children = ref$.children, charWidth = ref$.charWidth, charHeight = ref$.charHeight, charCount = ref$.charCount;
       return div({
+        className: 'row',
         style: {
           display: 'flex',
-          flexDirection: 'column-reverse'
+          flexFlow: 'row wrap'
         }
       }, children);
     }
@@ -44,49 +134,46 @@
     displayName: 'Col',
     getDefaultProps: function(){
       return {
-        data: null,
-        charWidth: 50,
-        charHeight: 50,
-        charCount: 10
+        charWidth: DEFAULT_WIDTH,
+        charHeight: DEFAULT_HEIGHT,
+        charCount: DEFAULT_COUNT,
+        data: null
       };
     },
     render: function(){
-      var word, ref$, charWidth, charHeight, charCount, i;
+      var word, ref$, charWidth, charHeight, charCount, lineCount, fillCount, i;
       word = this.props.data.word;
       ref$ = this.props, charWidth = ref$.charWidth, charHeight = ref$.charHeight, charCount = ref$.charCount;
+      lineCount = 2 * Math.ceil(word.length / charCount);
+      fillCount = charCount * lineCount - word.length;
       return div({
+        className: 'col',
         style: {
           display: 'flex',
-          flexDirection: 'row',
-          marginBottom: 5,
-          width: charHeight * (charCount + 2) + 1,
-          border: 'solid 1px black'
+          flexDirection: 'column'
         }
       }, div({
-        className: 'word',
+        className: 'whole-word',
         style: {
-          borderRight: 'solid 1px black'
-        }
-      }, span({
-        style: {
-          display: 'block',
-          transform: 'rotate(-90deg)'
+          width: charWidth * lineCount,
+          height: charHeight
         }
       }, WholeWord({
         data: this.props.data,
-        width: charHeight,
-        height: charWidth,
+        width: charWidth,
+        height: charHeight,
         progress: Infinity
-      }))), ol({
+      })), ol({
         className: 'printing',
         style: {
           display: 'flex',
-          flexFlow: 'row wrap',
+          flexFlow: 'column wrap',
           alignItems: 'flex-end',
           listStyle: 'none',
           padding: 0,
           margin: 0,
-          width: charHeight * (charCount + 1)
+          width: charWidth * lineCount,
+          height: charHeight * charCount
         }
       }, (function(){
         var i$, to$, results$ = [];
@@ -96,14 +183,17 @@
             key: i,
             className: 'partial',
             style: {
-              width: charHeight,
-              height: charWidth
+              width: charWidth,
+              height: charHeight
             }
-          }, span({
+          }, div({
+            className: 'grid',
             style: {
-              display: 'block',
-              transform: 'rotate(-90deg)'
+              width: charWidth,
+              height: charHeight
             }
+          }), div({
+            className: 'word'
           }, Word({
             data: this.props.data,
             width: charHeight,
@@ -112,31 +202,30 @@
           }))));
         }
         return results$;
-      }.call(this))));
+      }.call(this)), (function(){
+        var i$, to$, results$ = [];
+        for (i$ = 0, to$ = fillCount; i$ < to$; ++i$) {
+          i = i$;
+          results$.push(li({
+            key: word.length + i,
+            className: 'partial',
+            style: {
+              width: charWidth,
+              height: charHeight
+            }
+          }, div({
+            className: 'grid',
+            style: {
+              width: charWidth,
+              height: charHeight
+            }
+          })));
+        }
+        return results$;
+      }())));
     }
   });
-  codes = punycode.ucs2.decode('然後他就死掉了');
-  res$ = [];
-  for (i$ = 0, len$ = codes.length; i$ < len$; ++i$) {
-    code = codes[i$];
-    res$.push(code.toString(16));
-  }
-  codes = res$;
-  getData(codes, function(ds){
-    var i, d;
-    return ReactDOM.render(Row({}, (function(){
-      var i$, ref$, len$, results$ = [];
-      for (i$ = 0, len$ = (ref$ = ds).length; i$ < len$; ++i$) {
-        i = i$;
-        d = ref$[i$];
-        results$.push(Col({
-          key: i,
-          data: computeLength(d)
-        }));
-      }
-      return results$;
-    }())), document.getElementById('container'));
-  });
+  ReactDOM.render(App({}), document.getElementById('container'));
   function compose$() {
     var functions = arguments;
     return function() {
