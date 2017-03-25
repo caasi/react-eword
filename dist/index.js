@@ -1,11 +1,12 @@
 (function(){
-  var $, React, ReactDOM, punycode, createClass, ref$, div, ol, li, computeLength, Word, WholeWord, moedict, getData, Row, Col, codes, res$, i$, len$, code, slice$ = [].slice;
+  var $, React, ReactDOM, punycode, createClass, ref$, div, ol, li, span, computeLength, Word, WholeWord, moedict, getData, Row, Col, codes, res$, i$, len$, code, slice$ = [].slice;
   $ = require('jquery');
   React = require('react');
   ReactDOM = require('react-dom');
   punycode = require('punycode');
+  require('./index.css');
   createClass = compose$(React.createClass, React.createFactory);
-  ref$ = React.DOM, div = ref$.div, ol = ref$.ol, li = ref$.li;
+  ref$ = React.DOM, div = ref$.div, ol = ref$.ol, li = ref$.li, span = ref$.span;
   computeLength = require('react-zh-stroker/lib/data/computeLength');
   Word = require('./EWord').Word;
   Word = React.createFactory(Word);
@@ -26,7 +27,19 @@
       });
     }
   };
-  Row = div;
+  Row = createClass({
+    displayName: 'Row',
+    render: function(){
+      var children;
+      children = this.props.children;
+      return div({
+        style: {
+          display: 'flex',
+          flexDirection: 'column-reverse'
+        }
+      }, children);
+    }
+  });
   Col = createClass({
     displayName: 'Col',
     getDefaultProps: function(){
@@ -43,30 +56,37 @@
       ref$ = this.props, charWidth = ref$.charWidth, charHeight = ref$.charHeight, charCount = ref$.charCount;
       return div({
         style: {
-          display: 'inline-block',
-          verticalAlign: 'top',
-          marginRight: 5,
+          display: 'flex',
+          flexDirection: 'row',
+          marginBottom: 5,
+          width: charHeight * (charCount + 2) + 1,
           border: 'solid 1px black'
         }
       }, div({
         className: 'word',
         style: {
-          borderBottom: 'solid 1px black'
+          borderRight: 'solid 1px black'
+        }
+      }, span({
+        style: {
+          display: 'block',
+          transform: 'rotate(-90deg)'
         }
       }, WholeWord({
         data: this.props.data,
-        width: charWidth,
-        height: charHeight,
+        width: charHeight,
+        height: charWidth,
         progress: Infinity
-      })), ol({
+      }))), ol({
         className: 'printing',
         style: {
-          display: 'inline-block',
+          display: 'flex',
+          flexFlow: 'row wrap',
+          alignItems: 'flex-end',
           listStyle: 'none',
           padding: 0,
           margin: 0,
-          width: charWidth,
-          height: charHeight * charCount
+          width: charHeight * (charCount + 1)
         }
       }, (function(){
         var i$, to$, results$ = [];
@@ -76,14 +96,20 @@
             key: i,
             className: 'partial',
             style: {
-              display: 'inline-block'
+              width: charHeight,
+              height: charWidth
+            }
+          }, span({
+            style: {
+              display: 'block',
+              transform: 'rotate(-90deg)'
             }
           }, Word({
             data: this.props.data,
-            width: charWidth,
-            height: charHeight,
+            width: charHeight,
+            height: charWidth,
             progress: i
-          })));
+          }))));
         }
         return results$;
       }.call(this))));
