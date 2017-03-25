@@ -1,8 +1,9 @@
 (function(){
-  var React, ref$, svg, g, Stroke, Word;
+  var React, ReactDOM, ref$, svg, g, div, Stroke, Word;
   React = require('react');
-  ref$ = React.DOM, svg = ref$.svg, g = ref$.g;
-  Stroke = require('react-zh-stroker').Stroke;
+  ReactDOM = require('react-dom');
+  ref$ = React.DOM, svg = ref$.svg, g = ref$.g, div = ref$.div;
+  Stroke = require('react-zh-stroker/lib/Stroke');
   Stroke = React.createFactory(Stroke);
   Word = module.exports = React.createClass({
     displayName: 'EWord.Word',
@@ -22,9 +23,9 @@
       };
     },
     render: function(){
-      var word, progress, i, stroke;
+      var word, ref$, key, progress, i, stroke;
       word = this.props.data.word;
-      progress = this.props.progress;
+      ref$ = this.props, key = ref$.key, progress = ref$.progress;
       if (progress < 0) {
         progress = 0;
       }
