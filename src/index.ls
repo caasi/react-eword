@@ -6,7 +6,7 @@ punycode = require 'punycode'
 createClass = React.createFactory << React.createClass
 
 { div, ol, li } = React.DOM
-{ computeLength } = require 'react-zh-stroker/lib/data'
+computeLength = require 'react-zh-stroker/lib/data/computeLength'
 
 { Word } = require './EWord'
 Word = React.createFactory Word
@@ -79,7 +79,7 @@ codes = for code in codes => code.toString 16
 ds <- getData codes
 ReactDOM.render do
   Row {},
-    for d in ds
-      Col { data: computeLength d }
+    for d, i in ds
+      Col { key: i, data: computeLength d }
   document.getElementById \container
 
