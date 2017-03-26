@@ -2,6 +2,7 @@ $     = require 'jquery'
 React = require 'react'
 ReactDOM = require 'react-dom'
 punycode = require 'punycode'
+debounce = require 'lodash.debounce'
 
 require './index.css'
 
@@ -22,6 +23,7 @@ getData = (id, utfs = [], cb) ->
   if not x
     then cb id, []
     else
+      url = "#moedict#x.json"
       d = $.getJSON "#moedict#x.json"
       d.done (r) ->
         id, rs <- getData id, xs
@@ -29,6 +31,13 @@ getData = (id, utfs = [], cb) ->
       d.fail ->
         id, rs <- getData id, xs
         cb id, rs
+
+getDataFromWords = debounce do
+  (id, words = [], cb) ->
+    codes = punycode.ucs2.decode words
+    codes = for code in codes => code.toString 16
+    getData id, codes, cb
+  1000
 
 DEFAULT_WIDTH = 96
 DEFAULT_HEIGHT = 96
@@ -49,12 +58,11 @@ App = createClass do
   componentDidUpdate: (prevProps, prevState) ->
     { words } = @state
     if words isnt prevState.words
-      codes = punycode.ucs2.decode words
-      codes = for code in codes => code.toString 16
       @state.id += 1
-      id, data <~ getData @state.id, codes
-      if id >= @state.id
-        @setState { data }
+      id, data <~ getDataFromWords @state.id, words
+      @setState { data } if id >= @state.id
+  componentWillUnmount: ->
+    getDataFromWords.cancel!
   render: ->
     { charWidth, charHeight, charCount } = @props
     { words, data } = @state

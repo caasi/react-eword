@@ -7,7 +7,6 @@
     "start": "gulp",
     "build": "gulp build",
     "deploy": "gulp deploy",
-    "prepublish": "gulp compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -30,6 +29,7 @@
   },
   "dependencies": {
     "jquery": "^2.2.4",
+    "lodash.debounce": "^4.0.8",
     "normalize.css": "^5.0.0",
     "punycode": "^2.1.0",
     "react": "^15.4.2",

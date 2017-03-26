@@ -1,9 +1,10 @@
 (function(){
-  var $, React, ReactDOM, punycode, createClass, ref$, div, ol, li, form, input, computeLength, Word, WholeWord, moedict, getData, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_COUNT, App, Row, Col, slice$ = [].slice;
+  var $, React, ReactDOM, punycode, debounce, createClass, ref$, div, ol, li, form, input, computeLength, Word, WholeWord, moedict, getData, getDataFromWords, DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_COUNT, App, Row, Col, slice$ = [].slice;
   $ = require('jquery');
   React = require('react');
   ReactDOM = require('react-dom');
   punycode = require('punycode');
+  debounce = require('lodash.debounce');
   require('./index.css');
   createClass = compose$(React.createClass, React.createFactory);
   ref$ = React.DOM, div = ref$.div, ol = ref$.ol, li = ref$.li, form = ref$.form, input = ref$.input;
@@ -14,12 +15,13 @@
   WholeWord = React.createFactory(WholeWord);
   moedict = '//www.moedict.tw/json/';
   getData = function(id, utfs, cb){
-    var x, xs, d;
+    var x, xs, url, d;
     utfs == null && (utfs = []);
     x = utfs[0], xs = slice$.call(utfs, 1);
     if (!x) {
       return cb(id, []);
     } else {
+      url = moedict + "" + x + ".json";
       d = $.getJSON(moedict + "" + x + ".json");
       d.done(function(r){
         return getData(id, xs, function(id, rs){
@@ -33,6 +35,18 @@
       });
     }
   };
+  getDataFromWords = debounce(function(id, words, cb){
+    var codes, res$, i$, len$, code;
+    words == null && (words = []);
+    codes = punycode.ucs2.decode(words);
+    res$ = [];
+    for (i$ = 0, len$ = codes.length; i$ < len$; ++i$) {
+      code = codes[i$];
+      res$.push(code.toString(16));
+    }
+    codes = res$;
+    return getData(id, codes, cb);
+  }, 1000);
   DEFAULT_WIDTH = 96;
   DEFAULT_HEIGHT = 96;
   DEFAULT_COUNT = 8;
@@ -53,18 +67,11 @@
       };
     },
     componentDidUpdate: function(prevProps, prevState){
-      var words, codes, res$, i$, len$, code, this$ = this;
+      var words, this$ = this;
       words = this.state.words;
       if (words !== prevState.words) {
-        codes = punycode.ucs2.decode(words);
-        res$ = [];
-        for (i$ = 0, len$ = codes.length; i$ < len$; ++i$) {
-          code = codes[i$];
-          res$.push(code.toString(16));
-        }
-        codes = res$;
         this.state.id += 1;
-        return getData(this.state.id, codes, function(id, data){
+        return getDataFromWords(this.state.id, words, function(id, data){
           if (id >= this$.state.id) {
             return this$.setState({
               data: data
@@ -72,6 +79,9 @@
           }
         });
       }
+    },
+    componentWillUnmount: function(){
+      return getDataFromWords.cancel();
     },
     render: function(){
       var ref$, charWidth, charHeight, charCount, words, data, key, d, this$ = this;
