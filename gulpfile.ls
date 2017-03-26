@@ -62,6 +62,29 @@ gulp.task \webpack <[compile]> ->
     throw gutil.PluginError '[webpack-dev-server]', err if err
     gutil.log "Listening at #host:#port"
 
+gulp.task \build <[compile]> ->
+  config =
+    entry:
+      * './dist'
+    output:
+      path: __dirname
+      filename: 'bundle.js'
+      publicPath: '/'
+    plugins:
+      * new webpack.optimize.DedupePlugin
+      * new webpack.optimize.UglifyJsPlugin do
+          compress:
+            warnings: off
+          mangle: on
+          comments: off
+      * new webpack.optimize.OccurenceOrderPlugin
+    module:
+      loaders:
+        * test: /\.css$/ loader: \style!css
+        * test: /\.js$/  loader: \react-hot exclude: /node_modules/
+        ...
+  err, stats <- webpack config
+
 gulp.task \html ->
   gulp
     .src "#{options.src}/*.jade"
