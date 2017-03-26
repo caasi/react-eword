@@ -8,15 +8,16 @@ require! {
   'gulp-livescript': livescript
   'gulp-stylus': stylus
   'gulp-pug': pug
+  'gh-pages': ghPages
 }
 
 # http://stackoverflow.com/questions/7697038/more-than-10-lines-in-a-node-js-stack-error
 #Error.stackTraceLimit = Infinity
 
 options =
-  src:   path.resolve './src'
-  dist:  path.resolve './dist'
-  build: path.resolve '.'
+  src:   path.resolve __dirname, './src'
+  dist:  path.resolve __dirname, './dist'
+  build: path.resolve __dirname, '.'
 
 gulp.task \js ->
   gulp
@@ -62,7 +63,7 @@ gulp.task \webpack <[compile]> ->
     throw gutil.PluginError '[webpack-dev-server]', err if err
     gutil.log "Listening at #host:#port"
 
-gulp.task \build <[compile]> ->
+gulp.task \build <[compile]> (done) ->
   config =
     entry:
       * './dist'
@@ -84,6 +85,16 @@ gulp.task \build <[compile]> ->
         * test: /\.js$/  loader: \react-hot exclude: /node_modules/
         ...
   err, stats <- webpack config
+  console.error err if err
+  done err
+
+gulp.task \deploy <[build]> (done) ->
+  ghPages.publish do
+    options.build
+    src:
+      * './index.html'
+      * './bundle.js'
+    done
 
 gulp.task \html ->
   gulp

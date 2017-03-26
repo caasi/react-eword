@@ -6,6 +6,7 @@
   "scripts": {
     "start": "gulp",
     "build": "gulp build",
+    "deploy": "gulp deploy",
     "prepublish": "gulp compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,6 +15,7 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "css-loader": "^0.9.0",
+    "gh-pages": "^0.12.0",
     "gulp": "^3.9.1",
     "gulp-livescript": "^3.0.1",
     "gulp-pug": "^3.3.0",
